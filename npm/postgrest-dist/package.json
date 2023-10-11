@@ -1,0 +1,23 @@
+{
+  "repository": "https://github.com/SahAssar/postgrest-dist",
+  "name": "postgrest-dist",
+  "version": "v11.2.1-5",
+  "type": "module",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "release": "npm run darwin-x64 && npm run freebsd-x64 && npm run linux-arm64 && npm run linux-x64 && npm run win32-x64 && npm update && npm publish",
+    "darwin-x64": "version=$(cat ./package.json | jq -r '.version') && jq '.optionalDependencies[\"postgrest-dist-darwin-x64\"] = \"'$version'\"' package.json > package.json.tmp && mv package.json.tmp package.json && cd ../darwin-x64 && npm run pre-release && npm publish",
+    "freebsd-x64": "version=$(cat ./package.json | jq -r '.version') && jq '.optionalDependencies[\"postgrest-dist-freebsd-x64\"] = \"'$version'\"' package.json > package.json.tmp && mv package.json.tmp package.json && cd ../freebsd-x64 && npm run pre-release && npm publish",
+    "linux-arm64": "version=$(cat ./package.json | jq -r '.version') && jq '.optionalDependencies[\"postgrest-dist-linux-arm64\"] = \"'$version'\"' package.json > package.json.tmp && mv package.json.tmp package.json && cd ../linux-arm64 && npm run pre-release && npm publish",
+    "linux-x64": "version=$(cat ./package.json | jq -r '.version') && jq '.optionalDependencies[\"postgrest-dist-linux-x64\"] = \"'$version'\"' package.json > package.json.tmp && mv package.json.tmp package.json && cd ../linux-x64 && npm run pre-release && npm publish",
+    "win32-x64": "version=$(cat ./package.json | jq -r '.version') && jq '.optionalDependencies[\"postgrest-dist-win32-x64\"] = \"'$version'\"' package.json > package.json.tmp && mv package.json.tmp package.json && cd ../win32-x64 && npm run pre-release && npm publish"
+  },
+  "optionalDependencies": {
+    "postgrest-dist-darwin-x64": "v11.2.1-5",
+    "postgrest-dist-freebsd-x64": "v11.2.1-5",
+    "postgrest-dist-linux-arm64": "v11.2.1-5",
+    "postgrest-dist-linux-x64": "v11.2.1-5",
+    "postgrest-dist-win32-x64": "v11.2.1-5"
+  }
+}

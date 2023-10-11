@@ -1,0 +1,30 @@
+name: Test
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+            os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: ikalnytskyi/action-setup-postgres@v4
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Run NPM Pack
+        working-directory: ./npm/postgrest-dist
+        shell: bash
+        run: |
+          npm pack
+      - name: Run NPM Test
+        working-directory: ./tests
+        shell: bash
+        env:
+          PGRST_DB_URI: postgres://postgres:postgres@127.0.0.1:5432/postgres
+          PGRST_DB_ANON_ROLE: postgres
+        run: |
+          npm i ../npm/postgrest-dist/*.tgz && npm test

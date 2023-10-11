@@ -1,0 +1,15 @@
+{
+  "name": "postgrest-dist-linux-x64",
+  "license": "MIT",
+  "scripts": {
+    "pre-release": "version=$(cat ../postgrest-dist/package.json | jq -r '.version') && postgrestVersion=$(echo $version | sed -e 's/-[0-9]*$//g') && jq '.version = \"'$version'\"' package.json > package.json.tmp && mv package.json.tmp package.json && curl -LO https://github.com/PostgREST/postgrest/releases/download/$postgrestVersion/postgrest-$postgrestVersion-linux-static-x64.tar.xz && tar -xvf postgrest-*-linux-static-x64.tar.xz && rm postgrest-*-linux-static-x64.tar.xz"
+  },
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "bin": "postgrest",
+  "version": "v11.2.1-5"
+}
