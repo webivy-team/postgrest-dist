@@ -26,3 +26,7 @@ const server = await postgrest({
 // And shut down when you are done
 server.stop();
 ```
+
+## TODO
+
+- [ ] Add example with `PGRST_SERVER_UNIX_SOCKET` to make it easier to run mulitple instances
