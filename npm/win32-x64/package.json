@@ -11,5 +11,5 @@
     "x64"
   ],
   "bin": "postgrest.exe",
-  "version": "v11.2.1-5"
+  "version": "v11.2.2-1"
 }
