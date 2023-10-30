@@ -22,11 +22,12 @@ const server = await postgrest();
 const server = await postgrest({
   PGRST_DB_URI: "postgres://postgres@127.0.0.1:5432/postgres",
 });
+// also works with using unix sockets:
+const server = await postgrest({
+  PGRST_DB_URI: "postgres:///postgres?host=/var/run/postgresql",
+  PGRST_SERVER_UNIX_SOCKET: resolve(socketDir, "postgrest.sock"),
+});
 
 // And shut down when you are done
 server.stop();
 ```
-
-## TODO
-
-- [ ] Add example with `PGRST_SERVER_UNIX_SOCKET` to make it easier to run mulitple instances

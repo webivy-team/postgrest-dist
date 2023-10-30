@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 import { dirname, resolve } from "node:path";
-
 import { fileURLToPath } from "node:url";
+import { request } from "node:http";
 
 // Is there an official way to get the path to another packages binary?
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -15,6 +15,8 @@ const binPath = resolve(
 export default async (env = {}) => {
   const serverPort = env.PGRST_SERVER_PORT || process.env.PGRST_SERVER_PORT ||
     3000;
+  const serverSock = env.PGRST_SERVER_UNIX_SOCKET ||
+    process.env.PGRST_SERVER_UNIX_SOCKET;
   const healthWaitTime = parseInt(
     env.PGRST_HEALTH_WAIT_TIME || process.env.PGRST_HEALTH_WAIT_TIME,
   ) || 5000; // 5s to wait for start
@@ -49,17 +51,37 @@ export default async (env = {}) => {
 
     let backoff = 50;
     async function checkIfPostgrestRunning() {
-      const result = await fetch(`http://127.0.0.1:${serverPort}`)
-        .then((res) => res.status < 499)
-        .catch(
-          () => null,
-        );
-      if (result) {
-        clearTimeout(processCloseTimeout);
-        resolve();
+      if (serverSock) {
+        const req = request({
+          socketPath: serverSock,
+          path: "/",
+        }, ({ statusCode }) => {
+          if (statusCode === 200) {
+            clearTimeout(processCloseTimeout);
+            resolve();
+          } else {
+            setTimeout(checkIfPostgrestRunning, backoff);
+            backoff = Math.min(backoff + 50, 250);
+          }
+        });
+        req.on("error", function (e) {
+          setTimeout(checkIfPostgrestRunning, backoff);
+          backoff = Math.min(backoff + 50, 250);
+        });
+        req.end();
       } else {
-        setTimeout(checkIfPostgrestRunning, backoff);
-        backoff = Math.min(backoff + 50, 250);
+        const result = await fetch(`http://127.0.0.1:${serverPort}`)
+          .then((res) => res.status < 499)
+          .catch(
+            () => null,
+          );
+        if (result) {
+          clearTimeout(processCloseTimeout);
+          resolve();
+        } else {
+          setTimeout(checkIfPostgrestRunning, backoff);
+          backoff = Math.min(backoff + 50, 250);
+        }
       }
     }
     checkIfPostgrestRunning();
