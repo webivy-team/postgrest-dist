@@ -11,5 +11,5 @@
     "arm64"
   ],
   "bin": "postgrest",
-  "version": "v12.0.1-2"
+  "version": "v12.0.2-2"
 }
