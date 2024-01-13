@@ -31,3 +31,8 @@ const server = await postgrest({
 // And shut down when you are done
 server.stop();
 ```
+
+## TODO
+
+- Seems like upstream postgrest manually builds darwin-arm64, so those are often
+  not available at the same time as the rest
